@@ -14,25 +14,25 @@
   });
   const e = value => escape(text(value));
   const iconPaths = {
-    emperor: '<path d="M5 26V9h6v17m3 0V4h6v22m3 0V13h5v13M3 28h27"/>',
-    spacing_guild: '<circle cx="16" cy="16" r="10"/><path d="M2 21 30 11M4 8l24 16"/>',
-    bene_gesserit: '<path d="M5 7q11-6 22 0v19q-11-6-22 0ZM16 5v18M9 10l3-1m8 0 3 1"/>',
-    fremen: '<path d="m3 23 7-14 6 14 7-14 6 14M3 28h26M16 4v5"/>',
-    water: '<path d="M5 8h22l-4 20H9ZM9 17h14M12 4h8"/>',
-    spice: '<path d="m7 24 3-16 9-5 7 12-7 13ZM10 8l9 20m0-25-2 12 9 0"/>',
-    solari: '<circle cx="16" cy="16" r="11"/><path d="m16 8 7 8-7 8-7-8ZM16 8v16"/>',
+    emperor: '<path fill="currentColor" stroke="none" d="M4 26V11h6v15h3V4h6v22h3V14h6v12ZM3 28h26v3H3Z"/>',
+    spacing_guild: '<circle cx="16" cy="16" r="9"/><path d="m2 23 28-14"/><circle cx="16" cy="16" r="3" fill="currentColor" stroke="none"/>',
+    bene_gesserit: '<path d="M4 6q6-3 12 1 6-4 12-1v21q-6-3-12 1-6-4-12-1ZM16 7v21"/>',
+    fremen: '<path fill="currentColor" stroke="none" d="m2 27 10-21 6 12 4-8 9 17Z"/><circle cx="23" cy="5" r="3" fill="currentColor" stroke="none"/>',
+    water: '<path fill="currentColor" stroke="none" d="M16 2C13 8 5 16 5 21a11 11 0 0 0 22 0C27 16 19 8 16 2Z"/>',
+    spice: '<path fill="currentColor" stroke="none" d="m16 2 12 11-5 16H9L4 13Z"/><path d="m16 6-7 8 7 12 7-12Z" stroke="var(--symbol-cutout)" stroke-width="2"/>',
+    solari: '<circle cx="16" cy="16" r="12" fill="currentColor" stroke="none"/><path d="M12 9h8m-8 7h8m-8 7h8M16 6v20" stroke="var(--symbol-cutout)"/>',
     persuasion: '<path d="M5 6h22v14H15l-8 7v-7H5ZM10 11h12m-12 4h8"/>',
-    vp: '<path d="M7 5h18v11l-9 12-9-12ZM12 10h8m-4 0v10"/>',
+    vp: '<path fill="currentColor" stroke="none" d="m16 2 4 9 10 1-7 7 2 11-9-5-9 5 2-11-7-7 10-1Z"/>',
     sword: '<path d="m5 27 18-22 4 3-18 22M5 19l9 8M17 12l5 4"/>',
-    troop: '<path d="M6 28V15l10-5 10 5v13ZM10 14v14m12-14v14"/><circle cx="16" cy="5" r="3"/>',
-    intrigue: '<path d="M6 4h20v24H6ZM10 10h12m-12 5h7m2 6 3 3m0-3-3 3"/>',
+    troop: '<path fill="currentColor" stroke="none" d="M4 14 16 9l12 5v15H4Z"/><circle cx="16" cy="4" r="4" fill="currentColor" stroke="none"/><path d="M10 19v10m12-10v10" stroke="var(--symbol-cutout)"/>',
+    intrigue: '<path d="M5 4h22v25H5Z"/><path fill="currentColor" stroke="none" d="m16 8 7 8-7 8-7-8Z"/>',
     agent: '<circle cx="16" cy="8" r="5"/><path d="m11 15-5 13h20l-5-13Z"/>',
     spy: '<path d="M3 16q13-17 26 0Q16 33 3 16Z"/><circle cx="16" cy="16" r="4"/><path d="M16 12v8"/>',
     sandworm: '<path d="M7 9h18v12H7ZM9 21l-5 7m10-7-2 7m11-7 5 7M3 10h4m18 0h4M12 5h8v4"/>',
     hooks: '<path d="M8 5v18l8 5 8-5V5M8 12h16M12 5v7m8-7v7M16 12v16"/>',
     shield_wall: '<path d="M3 27V12l6-4v19m2 0V5h10v22m2 0V8l6 4v15M3 27h26"/>',
     landsraad: '<path d="M4 27h24M6 23V10m10 13V10m10 13V10M3 7l13-4 13 4Z"/>',
-    cities: '<path d="M3 28h26M5 28V13h9v15m0-18V5h9v23m0-12h5v12M8 17h3m6-8h3"/>',
+    cities: '<path fill="currentColor" stroke="none" d="M3 29V12h8v17h3V3h9v26h3V17h5v12Z"/>',
     card: '<path d="M8 6h18v23H8ZM4 23V3h18M12 12h10m-10 5h10"/>',
     discard: '<path d="M6 3h20v26H6Zm10 6v14m-5-5 5 5 5-5"/>',
     trash: '<path d="M5 8h22M12 4h8M8 8l2 21h12l2-21M13 13v11m6-11v11"/>',
@@ -45,10 +45,25 @@
     battle_wild: '<path d="m16 3 13 13-13 13L3 16ZM10 16h12m-6-6v12"/>',
   };
   iconPaths.spice_trade = iconPaths.spice;
+  iconPaths.city = iconPaths.cities;
   iconPaths.conflict = iconPaths.sword;
   iconPaths.deck = iconPaths.card;
   iconPaths.initiative = '<path d="m16 3 4 9 9 4-9 4-4 9-4-9-9-4 9-4Z"/>';
-  const iconSvg = key => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><g fill="none" stroke="${data.factions[key]?.color || '#e0ceb1'}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${iconPaths[key] || iconPaths.card}</g></svg>`;
+  // The silhouette carries meaning without color; the opaque plate keeps it
+  // readable over both bright artwork and the dark board, even at small sizes.
+  const iconColors = {
+    emperor:'#ffd45a', spacing_guild:'#ff839e', bene_gesserit:'#c7a0ff', fremen:'#56d9ed',
+    landsraad:'#7cdd8c', cities:'#a5b9ff', city:'#a5b9ff', spice_trade:'#ffac55',
+    water:'#56d9ed', spice:'#ffac55', solari:'#ffd45a', persuasion:'#f5f0df',
+    vp:'#bdf572', sword:'#ff7277', conflict:'#ff7277', troop:'#f5f0df',
+    intrigue:'#c7a0ff', card:'#86c5ff', deck:'#86c5ff', agent:'#f5f0df',
+    spy:'#ff839e', influence:'#7cdd8c', trash:'#ff7277', discard:'#ffac55',
+    contract:'#bdf572', sandworm:'#ffac55', hooks:'#56d9ed', shield_wall:'#a5b9ff',
+  };
+  const iconSvg = key => {
+    const color = iconColors[key] || '#f5f0df';
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" style="color:${color};--symbol-cutout:#101b24"><rect x="1" y="1" width="38" height="38" rx="8" fill="#101b24" stroke="${color}" stroke-width="2"/><g transform="translate(4 4)" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">${iconPaths[key] || iconPaths.card}</g></svg>`;
+  };
   const icons = Object.fromEntries(Object.keys(iconPaths).map(key => [key,
     'data:image/svg+xml,' + encodeURIComponent(iconSvg(key))]));
   const icon = (key, label=key) => `<img class="ac-icon" src="${icons[key] || icons.card}" alt="${e(label)}" title="${e(label)}">`;
@@ -61,6 +76,7 @@
   const factionKeys = { 'Emperor':'emperor', 'Spacing Guild':'spacing_guild', 'Bene Gesserit':'bene_gesserit', 'Fremen':'fremen' };
   const accessLabels = {landsraad:'Civic Assembly',cities:'City ports',city:'City ports',
     spice_trade:'Emberstone trade',spy:'Observer'};
+  const accessLabel = key => data.factions[key]?.name || accessLabels[key] || 'Agent access';
   const resourceKeys = {cards:'card',water:'water',spice:'spice',solari:'solari',troops:'troop',
     intrigue:'intrigue',vp:'vp',victory_points:'vp',spies:'spy',sandworms:'sandworm',contracts:'contract',
     persuasion:'persuasion',swords:'sword',trash:'trash',trashCards:'trash',influence:'influence',factionChoices:'influence'};
@@ -92,18 +108,19 @@
       ruleLines.length ? ruleLines : sections.filter(s=>s.timing !== 'general')
         .flatMap(s=>s.lines.map(line=>s.timing.replaceAll('_',' ')+': '+line));
     const ruleRow = (label,content) => content ? `<div class="ac-rule-row"><span>${e(label)}</span><div>${content}</div></div>` : '';
-    const access = (card.agentIcons || []).map(k=>icon(k,data.factions[k]?.name || accessLabels[k] || 'Agent access')).join('');
+    const access = (card.agentIcons || []).map(k=>icon(k,accessLabel(k))).join('');
     const reveal = rewards({persuasion:card.revealPersuasion,swords:card.revealSwords,...card.revealRewards});
     const conflict = type === 'conflict';
     return `<article class="small-card readable-card ac-card ${escape(faction)} ${escape(className)}" data-${conflict?'conflict':'card'}="${escape(card.key || '')}" data-edition="${edition(skin)}" style="--ac-accent:${record?.artPalette?.subject || data.factions[faction]?.color || '#be9870'};--ac-art-background:${record?.artPalette?.background || '#394343'}">
       <header class="ac-card-header"><span class="ac-card-type">${types[type] || 'Concord'} · ${edition(skin)==='uprising'?'Insurgence':'Founding'}</span>
         ${Number.isFinite(card.acquireCost) && card.acquireCost > 0 ? `<span class="ac-cost" title="${card.acquireCost} Authority">${icon('persuasion','Authority')}${card.acquireCost}</span>`:''}
         <strong>${escape(name)}</strong></header>
+      ${access && !conflict ? `<div class="ac-access-strip" aria-label="Agent access">${access}</div>` : ''}
       <div class="ac-art-wrap readable-card-scene">${image?`<img class="ac-art card-art" src="${escape(image)}" alt="${escape(name)}" loading="lazy">`:''}
         <div class="ac-factions">${factions.map(k=>icon(k,data.factions[k].name)).join('')}</div></div>
       <section class="ac-rules readable-card-rules">
         ${conflict ? (card.rewards || []).map((r,i)=>ruleRow(['1st','2nd','3rd'][i],r.text?`<span>${e(r.text)}</span>`:rewards(r))).join('') :
-          ruleRow('Agent access',access) + (!description ? ruleRow('Agent',rewards(card.agentRewards)) + ruleRow('Reveal',reveal) : '')}
+          (!description ? ruleRow('Agent',rewards(card.agentRewards)) + ruleRow('Reveal',reveal) : '')}
         ${prose.map(line=>`<p>${e(line)}</p>`).join('')}
         ${record?.specialText?`<p>${e(record.specialText)}</p>`:''}
         ${type==='leader'?[card.passive,card.signet].filter(Boolean).map((a,i)=>`<p><b>${i?'Seal ability':'Standing ability'}.</b> ${e(a.text)}</p>`).join(''):''}
@@ -140,6 +157,6 @@
     translateTree(document.body);
     observer.observe(document.body,options);
   }
-  window.Concord = {data,text,escape,icons,iconSvg,icon,item,render,rewards,translateTree,observeDisplay};
+  window.Concord = {data,text,escape,icons,iconSvg,icon,accessLabel,item,render,rewards,translateTree,observeDisplay};
   observeDisplay();
 })();

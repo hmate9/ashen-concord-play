@@ -123,3 +123,110 @@ body[data-skin="uprising"] .table-wordmark strong { font-size:22px; letter-spaci
 .ls-hex-art, body[data-skin="uprising"] .ls-hex-art,
 body[data-skin="uprising"] .ls-portrait-art { object-fit:contain; }
 body[data-skin="uprising"] .ls-portrait-art { border-radius:8px; }
+
+/* Gameplay information has a solid ground and a consistent visual vocabulary. */
+.game-screen { background:#11191c; }
+.ac-icon { width:22px; height:22px; }
+.ac-rules .ac-icon, .ac-factions .ac-icon { padding:0; background:transparent; border-radius:0; box-shadow:none; }
+.ac-access-strip { order:-1; display:flex; flex-wrap:wrap; flex:0 0 auto; align-items:center;
+  justify-content:center; gap:4px; padding:5px 7px; min-height:40px;
+  background:#0d1720; border-bottom:2px solid #617888; }
+.ac-access-strip .ac-icon { width:30px; height:30px; }
+.card-inspector .ac-access-strip .ac-icon, .ac-detail .ac-access-strip .ac-icon { width:40px; height:40px; }
+.rail-card .ac-access-strip { min-height:24px; padding:3px 2px; gap:2px; flex-wrap:wrap; }
+.rail-card .ac-access-strip .ac-icon { width:20px; height:20px; }
+.rail-reserve .ac-access-strip { display:none; }
+
+/* The entire access strip fits in each exposed card width. Small screens scroll
+   the hand instead of shrinking its most important symbols. */
+body[data-skin] .hand-card { width:152px; flex:0 0 152px; margin:0 -6px; }
+body[data-skin] .hand-card .ac-access-strip { justify-content:flex-start; padding:6px 8px; gap:4px; }
+body[data-skin] .hand-card .ac-access-strip .ac-icon { width:28px; height:28px; }
+body[data-skin] .hand-card .ac-card .ac-card-header { height:46px; flex-basis:46px; }
+body[data-skin] .hand-card .ac-card .ac-card-header strong { font-size:12px; }
+body[data-skin] .hand-card .ac-card-type { font-size:7px; }
+body[data-skin] .hand-fan { bottom:-80px; left:450px; right:200px; gap:0; padding:28px 12px 0;
+  justify-content:flex-start; overflow-x:auto; pointer-events:auto; }
+body[data-skin="uprising"] .hand-fan { bottom:6px; }
+
+body[data-skin] .space-tile.emperor, body[data-skin] .faction-ladder.emperor { --space-color:#ffd45a; }
+body[data-skin] .space-tile.spacing_guild, body[data-skin] .faction-ladder.spacing_guild { --space-color:#ff839e; }
+body[data-skin] .space-tile.bene_gesserit, body[data-skin] .faction-ladder.bene_gesserit { --space-color:#c7a0ff; }
+body[data-skin] .space-tile.fremen, body[data-skin] .faction-ladder.fremen { --space-color:#56d9ed; }
+body[data-skin] .space-tile.landsraad { --space-color:#7cdd8c; }
+body[data-skin] .space-tile.cities { --space-color:#a5b9ff; }
+body[data-skin] .space-tile.spice_trade, body[data-skin] .space-tile.choam { --space-color:#ffac55; }
+body[data-skin] .space-tile { border-width:2px; }
+body[data-skin] .space-art { opacity:.4; }
+body[data-skin] .space-tile:hover .space-art { opacity:.5; }
+body[data-skin] .space-name { top:0; left:0; right:0; min-height:30px;
+  display:flex; align-items:center; gap:5px; padding:3px 5px;
+  background:#101b24ed; color:#fff4df; font:700 10px/1.15 system-ui,sans-serif;
+  letter-spacing:.02em; z-index:2; }
+body[data-skin] .space-name .sf-agent-icon { width:24px; height:24px; flex-shrink:0; }
+body[data-skin] .space-cost, body[data-skin] .space-rewards {
+  display:flex; flex-direction:row; align-items:center; flex-wrap:wrap; gap:4px;
+  padding:3px 4px; margin:0; border:0; border-radius:4px;
+  background:#101b24f5; color:#fff; font:800 16px/1 system-ui,sans-serif; z-index:2;
+}
+body[data-skin] .space-cost { top:34px; left:4px; right:auto; padding:1px 4px; border-left:3px solid #ff9e8c; }
+body[data-skin] .space-rewards { bottom:3px; left:4px; right:4px; border-left:3px solid #9cdfb1; }
+body[data-skin] .space-cost img, body[data-skin] .space-rewards img { width:24px; height:24px; filter:none; flex-shrink:0; }
+body[data-skin] .space-tile .icon-count { gap:3px; font-size:16px; }
+body[data-skin] .space-tile .icon-count b, body[data-skin] .maker-bonus b { font-size:16px; color:#fff; }
+body[data-skin] .space-flow-label { font:800 8px/1 system-ui,sans-serif; letter-spacing:.05em; }
+body[data-skin] .space-cost .space-flow-label { color:#ffb5a7; }
+body[data-skin] .space-rewards .space-flow-label { color:#ace9bd; }
+body[data-skin] .space-tile .combat-flag { width:24px; height:24px; border:0; background:none; }
+body[data-skin] .space-tile .combat-flag img { width:24px; height:24px; }
+body[data-skin] .space-tile .agents { top:42px; left:auto; right:5px; transform:none; gap:2px; }
+body[data-skin] .space-tile .agents i { width:26px; height:26px; border-width:2px; }
+body[data-skin] .space-tile.occupied::after { z-index:0; }
+body[data-skin] .space-rewards { gap:1px; padding:3px 2px; }
+body[data-skin] .space-rewards .space-flow-label { font-size:7px; letter-spacing:0; }
+body[data-skin] .space-rewards img { width:24px; height:24px; }
+body[data-skin] .space-rewards .icon-count { gap:1px; }
+body[data-skin] .space-rewards .icon-count b { font-size:14px; }
+body[data-skin] .space-name > span:not(.combat-flag) { flex:1; }
+body[data-skin] .space-name .combat-flag, body[data-skin] .space-name .combat-flag img { width:19px; height:19px; flex-shrink:0; }
+.space-effect { display:inline-flex; align-items:center; gap:3px; }
+.space-effect small { max-width:47px; font:600 8px/1.1 system-ui,sans-serif; color:#d1e3e9; }
+body[data-skin] .influence-requirement { display:inline-flex; align-items:center; gap:2px; }
+body[data-skin] .influence-requirement .space-flow-label { color:#d4ccff; }
+body[data-skin="uprising"] .board-viewport { overflow:auto; scrollbar-width:thin; scrollbar-color:#8295a0 #101b24; }
+body[data-skin="uprising"] .board-layer { width:1400px; min-width:1400px; height:1150px; min-height:1150px; }
+body[data-skin="uprising"] .hand-fan { left:0; }
+body[data-skin="starfall"] .board-viewport { position:absolute; inset:0; overflow:auto; }
+body[data-skin="starfall"] .board-layer { min-width:1440px; min-height:1000px; }
+
+/* Preserve a useful symbol size when the board needs to pan. */
+@media (max-width:1300px), (max-height:900px) {
+  body[data-skin="starfall"] .hand-fan { left:250px; }
+  body[data-skin="starfall"] .board-viewport { top:44px; left:224px; right:94px; bottom:172px;
+    scrollbar-width:thin; scrollbar-color:#8295a0 #101b24; }
+  body[data-skin="starfall"] .board-layer { position:relative; width:1440px; min-width:1440px; height:1000px; min-height:1000px;
+    /* The original board reserves its left edge for the player plaques. */
+    margin-left:-230px; }
+}
+@media (max-width:600px) {
+  body[data-skin="starfall"] .board-viewport { left:4px; right:4px; top:148px; bottom:176px; }
+  body[data-skin="starfall"] .board-layer { width:1440px; min-width:1440px; height:1000px; min-height:1000px; margin-left:-230px; }
+}
+
+@media (max-width:1100px) {
+  body[data-skin] .hand-fan { left:150px; right:95px; bottom:-32px;
+    justify-content:flex-start; overflow-x:auto; pointer-events:auto; padding:28px 6px 4px; gap:6px; }
+  body[data-skin] .hand-card { margin:0; }
+  body[data-skin="uprising"] .hand-fan { left:0; bottom:0; }
+}
+@media (max-width:600px) {
+  body[data-skin] .hand-fan { left:8px; right:78px; }
+  body[data-skin="starfall"] .human-corner { top:42px; bottom:auto; left:4px; width:calc(100% - 8px); transform:none; }
+  body[data-skin="starfall"] .human-corner .plaque { display:grid; grid-template-columns:108px 1fr; background:#101b24; }
+  body[data-skin="starfall"] .human-corner .plaque-top { grid-row:1 / 4; min-height:64px; gap:5px; padding:3px; }
+  body[data-skin="starfall"] .human-corner .plaque-portrait { width:28px; height:40px; }
+  body[data-skin="starfall"] .human-corner .plaque-name,
+  body[data-skin="starfall"] .human-corner .plaque-stats { grid-column:2; }
+  body[data-skin="starfall"] .peek-cluster { right:6px; bottom:104px; }
+  body[data-skin="starfall"] .peek-card { width:64px; }
+}

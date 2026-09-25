@@ -581,8 +581,8 @@ function applySkinConfig() {
     VP_SOURCE_LABELS = Object.fromEntries(Object.entries(config.vpSourceLabels).map(([key,v])=>[key,translated(v)]));
     RESOURCE_ICONS = { ...ac.icons };
     FACTION_ICONS = Object.fromEntries(FACTIONS.map(key=>[key,ac.icons[key]]));
-    AGENT_ICON_META = Object.fromEntries(Object.entries(config.agentIconMeta).map(([key,v])=>
-      [key,{label:translated(v.label),icon:ac.icons[key] || ac.icons.agent}]));
+    AGENT_ICON_META = Object.fromEntries(Object.keys(config.agentIconMeta).map(key=>
+      [key,{label:ac.accessLabel(key),icon:ac.icons[key] || ac.icons.agent}]));
     FACTION_LEVEL4_BONUS = Object.fromEntries(FACTIONS.map((key,index)=>[key,{
       ...config.factionLevel4Bonus[key],label:translated(config.factionLevel4Bonus[key].label),
       icon:ac.icons[["solari","spice","intrigue","water"][index]],
@@ -1913,12 +1913,12 @@ function statChip(kind, value, label, extraClass = "") {
   `;
 }
 
-function iconCount(kind, count, label = "") {
+function iconCount(kind, count, label = "", showOne = false) {
   if (!count) return "";
   return `
     <span class="icon-count" ${label ? `title="${escapeHtml(label)}"` : ""}>
       ${iconTag(kind, label || kind)}
-      ${count > 1 ? `<b>${count}</b>` : ""}
+      ${count > 1 || showOne ? `<b>${count}</b>` : ""}
     </span>
   `;
 }
@@ -2621,19 +2621,25 @@ function renderZoom(card, kind = "card") {
 
 function spaceCostBadge(space) {
   const cost = space.cost || {};
+  let requirement = "";
   const parts = [
-    iconCount("water", cost.water, publicText("Water cost")),
-    iconCount("spice", cost.spice, publicText("Spice cost")),
-    iconCount("solari", cost.solari, publicText("Solari cost")),
+    iconCount("water", cost.water, publicText("Water cost"), true),
+    iconCount("spice", cost.spice, publicText("Spice cost"), true),
+    iconCount("solari", cost.solari, publicText("Solari cost"), true),
   ].filter(Boolean);
+  if (activeSkin !== "uprising" && space.key === "sell_melange") {
+    parts.push(`<span class="icon-count" title="Trade 2 / 3 / 4 / 5 Emberstone for 6 / 8 / 10 / 12 Crowns">${iconTag("spice", publicText("Spice"))}<b>2–5</b></span>`);
+  }
   if (activeSkin === "uprising") {
     const optional = cost.optionalSpice ? "spice" : cost.optionalSolari ? "solari" : null;
     if (optional) parts.push(`<span class="optional-cost" title="Optional payment">${iconTag(optional, "Optional " + optional)}0/${cost.optionalSpice || cost.optionalSolari}</span>`);
     const faction = { imperial_privilege: "emperor", shipping: "spacing_guild", sietch_tabr: "fremen" }[space.key];
-    if (faction && cost.requiredInfluence) parts.push(`<span class="influence-requirement" title="Requires ${cost.requiredInfluence} ${FACTION_LABELS[faction]} influence">${iconTag(faction, FACTION_LABELS[faction])}${cost.requiredInfluence}+</span>`);
+    if (faction && cost.requiredInfluence) requirement = `<span class="influence-requirement" title="Requires ${cost.requiredInfluence} ${FACTION_LABELS[faction]} influence; not spent"><span class="space-flow-label">REQ</span>${iconTag(faction, FACTION_LABELS[faction])}${cost.requiredInfluence}+</span>`;
+  } else if (space.key === "sietch_tabr") {
+    requirement = `<span class="influence-requirement" title="Requires 2 Salt Road Clans influence; not spent"><span class="space-flow-label">REQ</span>${iconTag("fremen", FACTION_LABELS.fremen)}2+</span>`;
   }
-  if (!parts.length) return "";
-  return `<span class="space-cost">${parts.join("")}</span>`;
+  if (!parts.length && !requirement) return "";
+  return `<span class="space-cost">${parts.length ? '<span class="space-flow-label">PAY</span>' : ''}${parts.join("")}${requirement}</span>`;
 }
 
 function uprisingSpaceDescription(key) {
@@ -2642,7 +2648,7 @@ function uprisingSpaceDescription(key) {
 }
 
 function uprisingSpaceOptions(space) {
-  const gain = (icon, amount = 1) => iconCount(icon, amount, icon);
+  const gain = (icon, amount = 1) => iconCount(icon, amount, icon, true);
   const or = '<em class="space-or">or</em>';
   // Printed alternatives are presentation only; the engine supplies legal choices.
   switch (space.key) {
@@ -2680,24 +2686,41 @@ function spaceRewardIcons(space) {
     `
     : "";
   const parts = [
-    iconCount("vp", rewards.vp, publicText("Gain VP")),
-    iconCount("card", rewards.cards, "Draw cards"),
-    iconCount("intrigue", rewards.intrigue, publicText("Draw Intrigue cards")),
-    iconCount("troop", rewards.troops, publicText("Recruit troops")),
-    iconCount("spice", rewards.spice, publicText("Gain Spice")),
-    iconCount("water", rewards.water, publicText("Gain Water")),
-    iconCount("solari", rewards.solari, publicText("Gain Solari")),
-    iconCount("influence", rewards.influence, publicText("Gain Influence")),
-    iconCount("spy", rewards.spies, publicText("Place spies")),
-    iconCount("sandworm", rewards.sandworms, publicText("Summon sandworms")),
-    iconCount("trash", rewards.trash, publicText("Trash cards")),
-    iconCount("contract", rewards.contracts, publicText("Take contracts")),
+    iconCount("vp", rewards.vp, publicText("Gain VP"), true),
+    iconCount("card", rewards.cards, "Draw cards", true),
+    iconCount("intrigue", rewards.intrigue, publicText("Draw Intrigue cards"), true),
+    iconCount("troop", rewards.troops, publicText("Recruit troops"), true),
+    iconCount("spice", rewards.spice, publicText("Gain Spice"), true),
+    iconCount("water", rewards.water, publicText("Gain Water"), true),
+    iconCount("solari", rewards.solari, publicText("Gain Solari"), true),
+    iconCount("influence", rewards.influence, publicText("Gain Influence"), true),
+    iconCount("spy", rewards.spies, publicText("Place spies"), true),
+    iconCount("sandworm", rewards.sandworms, publicText("Summon sandworms"), true),
+    iconCount("trash", rewards.trash, publicText("Trash cards"), true),
+    iconCount("contract", rewards.contracts, publicText("Take contracts"), true),
   ].filter(Boolean);
+  if (activeSkin !== "uprising") {
+    // These effects are resolved separately from ordinary resource rewards by
+    // the Imperium engine (game_rules.cpp and ApplyAgentSpaceUpgrades).
+    if (["carthag", "conspire", "secrets"].includes(space.key)) {
+      parts.push(iconCount("intrigue", 1, publicText("Draw Intrigue"), true));
+    }
+    const extra = {
+      foldspace: `<span class="space-effect" title="Acquire a Passage Writ card">${iconCount("card", 1, "Acquire Passage Writ", true)}<small>acquire</small></span>`,
+      high_council: `<span class="space-effect" title="Gain 2 Authority each Reveal turn for the rest of the game">${iconCount("persuasion", 2, "Authority each Reveal")}<small>each reveal</small></span>`,
+      swordmaster: `<span class="space-effect" title="Gain a permanent third Agent">${iconCount("agent", 1, "Permanent extra Agent", true)}<small>permanent</small></span>`,
+      mentat: `<span class="space-effect" title="Extra Agent for this round">${iconCount("agent", 1, "Temporary Agent", true)}<small>round</small></span>`,
+      hall_of_oratory: iconCount("persuasion", 1, "Authority this round", true),
+      selective_breeding: `<span class="space-effect" title="You may trash a card from your hand to draw 2 cards">${iconTag("trash", "Trash a card")}<small>→</small>${iconCount("card", 2, "Then draw 2 cards")}</span>`,
+      sell_melange: `<span class="icon-count" title="2 → 6, 3 → 8, 4 → 10, or 5 → 12">${iconTag("solari", "Crowns")}<b>6–12</b></span>`,
+    };
+    if (extra[space.key]) parts.push(extra[space.key]);
+  }
   return `
     <span class="space-rewards">
+      <span class="space-flow-label">GAIN</span>
       ${activeSkin === "uprising" ? uprisingSpaceOptions(space) ?? parts.join("") : parts.join("")}
       ${makerBadge}
-      ${space.combat ? `<span class="combat-flag" title="Combat space">${iconTag("sword", "Combat")}</span>` : ""}
     </span>
   `;
 }
@@ -2838,7 +2861,7 @@ function renderSpaceTile(space, legalSpaces, selectedCardSpaces, brSpaceHints,
     <button class="space-tile${legal}${unreachable}${selected}${occupied}${brTarget}${choiceTarget} ${space.faction || space.icon}"
             style="${style}" data-space="${space.key}" title="${escapeHtml([space.name, uprisingSpaceDescription(space.key)].filter(Boolean).join("\n"))}">
       ${imageTag(space.image, space.name, "space-art")}
-      <span class="space-name">${escapeHtml(space.name)}</span>
+      <span class="space-name">${agentIconTag(space.icon || space.faction)}<span>${escapeHtml(space.name)}</span>${space.combat ? `<span class="combat-flag" title="Combat space">${iconTag("sword", "Combat")}</span>` : ""}</span>
       ${spaceCostBadge(space)}
       ${spaceRewardIcons(space)}
       <span class="agents">
@@ -3086,7 +3109,7 @@ function renderBoard() {
   const sharedSpySpaces = activeSkin === "uprising" ? sharedObservationSpaceKeys() : null;
   const choiceTargets = spaceChoiceTargets();
   return `
-    ${activeSkin === "uprising" ? '<div class="board-viewport" tabindex="0" role="region" aria-label="Uprising board; scroll to explore on smaller screens">' : ""}
+    <div class="board-viewport" tabindex="0" role="region" aria-label="Game board; scroll to explore on smaller screens">
     <main class="board-layer">
       <div class="planet"></div>
       ${renderUprisingBoardSurface()}
@@ -3103,7 +3126,7 @@ function renderBoard() {
       </div>
       ${renderConflictPanel()}
     </main>
-    ${activeSkin === "uprising" ? "</div>" : ""}
+    </div>
   `;
 }
 
