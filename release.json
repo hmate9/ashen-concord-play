@@ -1,0 +1,11 @@
+{
+  "model": "imperium-compact-v1",
+  "ruleset": "imperium",
+  "players": 4,
+  "checkpointSha256": "2c48ec7fcb23b1a2ee4228baaabdfe5f33476da6dea5bfb9b0ee5f96bdb2c616",
+  "weights": {
+    "path": "downloads/imperium-compact-v1.zip",
+    "sha256": "cc478523709b4a19246abf0ca106acc2d90f2e1d2ba4b41fac1d84ad186ac339"
+  },
+  "sourceCommit": "9e596f85d621a176c3fefd2c7a28d101838ea04c"
+}

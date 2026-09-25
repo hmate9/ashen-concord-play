@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Compact Deck">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g fill="none" stroke="#7ab8ff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <rect x="16" y="18" width="28" height="34" rx="4"/>
+    <path d="M22 12h26v34"/>
+    <path d="M25 27h10M25 36h14"/>
+  </g>
+</svg>

@@ -1,0 +1,521 @@
+/* Table presentation. Rules and action legality remain owned by the engine. */
+.eyebrow { color: #bda37d; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+button:focus-visible, [tabindex]:focus-visible { outline: 2px solid #9ce0e8; outline-offset: 4px; }
+.market-heading, .hand-toolbar, .combat-player-name { display: none; }
+.hand-card-controls { display: flex; align-items: center; gap: 5px; }
+.rail-card, .rail-reserve, .conflict-card { padding: 0; color: inherit; cursor: pointer; }
+.drawer:not(.open) { display: none; }
+.drawer.open { visibility: visible; }
+.drag-ghost .readable-card { width: 140px; height: 196px; }
+.acquire-option { min-width: 0; }
+.acquire-inspect { display: block; width: 100%; min-height: 32px; margin-top: 5px; border: 1px solid #b3c4ba33; border-radius: 4px; color: #dfd1b4; background: #14282e; font-size: 10px; cursor: pointer; }
+.acquire-heading { display: none; }
+.game-result { padding: 20px 0; }
+.game-result > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.game-result h2 { font: 26px Georgia, serif; margin: 6px 0 14px; color: #efdbac; }
+.result-scores { display: flex; gap: 10px; overflow-x: auto; }
+.result-score { display: flex; flex: 1 0 130px; gap: 12px; align-items: center; padding: 12px; border: 1px solid #8da19b33; background: #14272d; border-radius: 7px; }
+.result-score.winner { border-color: #c8a764; background: linear-gradient(120deg, #514a30, #1c3034); }
+.result-score > strong { font: 30px Georgia, serif; color: #e8ce8e; }
+.result-score > span { font-size: 11px; line-height: 1.4; }
+.result-score small { display: block; font: 9px system-ui, sans-serif; color: #acbcb2; margin-top: 3px; }
+.acquire-card .readable-card-cost { display: none; }
+.acquire-card:has(.readable-card) .acquire-cost-badge { left: auto; right: 5px; }
+.acquire-card:has(.readable-card) .readable-card > header > strong { padding-right: 22px; }
+
+/* Every card keeps its name, access icons, cost and rewards even without scans. */
+.readable-card {
+  --card-accent: #c8ad77;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  aspect-ratio: 5 / 7;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  text-align: left;
+  border: 1px solid color-mix(in srgb, var(--card-accent) 65%, #263a3e);
+  border-radius: 8px;
+  background: #162326;
+  color: #f2eadb;
+  box-shadow: inset 0 0 0 3px #0f191c, 0 4px 16px #0005;
+}
+.readable-card.emperor { --card-accent: #ddbf72; }
+.readable-card.spacing_guild { --card-accent: #d99566; }
+.readable-card.bene_gesserit { --card-accent: #b398d2; }
+.readable-card.fremen { --card-accent: #75b9ca; }
+.readable-card > header { position: relative; flex: 0 0 auto; padding: 8px 9px 6px; min-height: 48px; background: linear-gradient(120deg, #213035, #101b1e); }
+.readable-card > header > span { display: block; color: var(--card-accent); text-transform: uppercase; font-size: 7px; letter-spacing: .12em; margin-bottom: 4px; }
+.readable-card > header > strong { display: block; padding-right: 8px; font-family: Georgia, serif; font-weight: 500; font-size: 12px; line-height: 1.2; }
+.readable-card-cost { position: absolute; right: 6px; top: 5px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: #d1ad67; color: #162024; font-size: 11px; box-shadow: 0 0 0 2px #10191d; }
+.readable-card-scene { display: grid; place-items: center; flex: 1 1 35%; min-height: 20px; background-size: cover; background-position: center; border-block: 1px solid #d9bf822c; }
+.readable-card-scene .card-emblem { width: 32px; height: 32px; padding: 4px; border-radius: 50%; background: #111c21bb; box-shadow: 0 0 0 1px #d5c49c45; }
+.readable-card-rules { padding: 6px 8px; flex: 0 0 auto; background: #122025; }
+.card-rule-line { display: flex; justify-content: space-between; align-items: center; gap: 3px; min-height: 20px; font-size: 10px; }
+.card-rule-line > span { font-size: 8px; color: #a3b9b9; }
+.card-rule-line b { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 3px; font-weight: 600; }
+.card-rule-line img { width: 15px; height: 15px; object-fit: contain; }
+.card-rule-line .icon-count { gap: 1px; font-size: 10px; }
+.card-rule-line.reveal { border-top: 1px solid #b3c8c51c; margin-top: 3px; padding-top: 3px; }
+.card-rule-summary { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin: 4px 0 0; font-size: 8px; line-height: 1.4; color: #d0c7b6; }
+.optional-card-scan { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.card-zoom .readable-card { width: 260px; height: 364px; }
+.card-zoom .readable-card > header > strong { font-size: 23px; }
+.card-zoom .readable-card > header > span { font-size: 10px; }
+.card-zoom .readable-card-rules { padding: 12px; }
+.card-zoom .card-rule-line { font-size: 15px; min-height: 28px; }
+.card-zoom .card-rule-line > span, .card-zoom .icon-count { font-size: 12px; }
+.card-zoom .card-rule-line img { width: 22px; height: 22px; }
+.card-zoom .card-rule-summary { font-size: 12px; -webkit-line-clamp: 4; }
+
+/* Native dialog provides keyboard focus containment, Escape and a backdrop. */
+.card-inspector { width: min(740px, 94vw); max-height: 88dvh; padding: 32px; overflow: auto; border: 1px solid #c6ae7955; border-radius: 16px; color: #eee5d5; background: #102027; box-shadow: 0 30px 100px #000b; }
+.card-inspector[open] { display: grid; grid-template-columns: 220px 1fr; gap: 28px; }
+.card-inspector::backdrop { background: #030c10bc; backdrop-filter: blur(5px); }
+.inspector-close { position: absolute; top: 8px; right: 10px; width: 36px; height: 36px; border: 1px solid #dac18a44; border-radius: 50%; background: #203139; color: #f6e6c4; font-size: 24px; cursor: pointer; }
+.inspector-art { padding-top: 10px; }
+.inspector-art .readable-card > header > strong { font-size: 20px; }
+.inspector-art .card-rule-line { min-height: 26px; }
+.inspector-art .card-rule-line img { width: 22px; height: 22px; }
+.inspector-art .card-rule-line > span, .inspector-art .icon-count { font-size: 12px; }
+.inspector-art .card-rule-summary { font-size: 10px; }
+.inspector-copy h2 { font-family: Georgia, serif; font-weight: 400; font-size: 29px; margin: 8px 0 24px; }
+.inspector-copy h3 { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #d0b27b; margin: 18px 0 8px; }
+.inspector-copy ul { padding-left: 18px; margin: 0; }
+.inspector-copy li, .inspector-copy p { font-size: 13px; line-height: 1.7; color: #cdd8d6; }
+
+/* Uprising's table: players / board / market, with a separate hand area. */
+body[data-skin="uprising"] { --gold: #d3b785; --gold-bright: #efdbb5; --panel: #101e24f5; background: #081519; }
+body[data-skin="uprising"] .game-screen { min-height: 860px; background: radial-gradient(ellipse at 55% 55%, #283331 0, #111f24 60%, #081317); }
+body[data-skin="uprising"] .table-masthead { position: absolute; inset: 0 0 auto; height: 88px; padding: 18px 22px; display: flex; gap: 35px; align-items: flex-start; border-bottom: 1px solid #bba67c29; background: #0b191ef0; }
+.table-wordmark { width: 168px; }
+.table-wordmark span { display: block; text-transform: uppercase; font-size: 9px; letter-spacing: .25em; color: #bda982; }
+.table-wordmark strong { display: block; margin-top: 4px; font-family: Georgia, serif; font-size: 26px; font-weight: 400; letter-spacing: .16em; color: #f2dec0; }
+.table-round { font-size: 11px; color: #aaa998; letter-spacing: .04em; }
+.table-round b { font-size: 16px; color: #f2ddbb; font-weight: 500; }
+.round-pips { display: flex; gap: 4px; margin-top: 7px; }
+.round-pips i { width: 12px; height: 2px; background: #3c4641; }
+.round-pips i.reached { background: #d8bc80; }
+.table-phase { padding: 5px 9px; border: 1px solid #819d9640; border-radius: 4px; color: #bbd2ca; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+body[data-skin="uprising"] .instruction-bar { top: 54px; left: 225px; right: 220px; transform: none; max-width: none; padding: 0; border: 0; background: none; color: #b9cdcb; font-size: 12px; font-weight: 400; line-height: 1.5; }
+body[data-skin="uprising"] .top-icons { top: 18px; right: 18px; gap: 6px; }
+body[data-skin="uprising"] .top-icon { width: 34px; height: 32px; border: 1px solid #72857c40; border-radius: 6px; background: #203038; }
+body[data-skin="uprising"] .uprising-global-chip { min-height: 30px; font-size: 9px; border-color: #74898035; background: #182a2c; border-radius: 5px; }
+body[data-skin="uprising"] .uprising-global-chip em { background: #819d961e; }
+body[data-skin="uprising"] .board-viewport { position: absolute; left: 222px; right: 218px; top: 110px; bottom: 235px; min-height: 500px; }
+body[data-skin="uprising"] .board-layer { position: relative; width: 100%; height: 100%; background: radial-gradient(ellipse at 66% 64%, #5d4a2b52, transparent 60%); }
+body[data-skin="uprising"] .planet { display: none; }
+.board-heading { position: absolute; top: 0; color: #d6c5a4; font-family: Georgia, serif; font-size: 14px; letter-spacing: .035em; }
+.board-heading span { margin-left: 7px; font-family: system-ui, sans-serif; font-size: 8px; color: #7f9796; letter-spacing: .07em; text-transform: uppercase; }
+.board-heading.factions { left: 1%; }
+.board-heading.council { left: 25.5%; }
+.board-heading.commerce { left: 80.3%; }
+.board-heading.commerce span { display: none; }
+.arrakis-label { position: absolute; left: 34%; bottom: 4%; font-family: Georgia, serif; font-size: clamp(28px, 3.5vw, 54px); letter-spacing: .24em; color: #a58d5d28; pointer-events: none; }
+.arrakis-label span { display: block; margin-top: 8px; font-family: system-ui, sans-serif; font-size: 8px; color: #ab96755e; letter-spacing: .4em; text-align: center; text-transform: uppercase; }
+body[data-skin="uprising"] .space-tile { border: 1px solid color-mix(in srgb, var(--space-color) 42%, #314346); border-left: 3px solid color-mix(in srgb, var(--space-color) 85%, #314346); border-radius: 7px; background: #17282c; box-shadow: 0 4px 10px #0003; overflow: hidden; transition: border-color 160ms, box-shadow 160ms, opacity 160ms, transform 160ms; }
+body[data-skin="uprising"] .space-art { opacity: .17; filter: saturate(.55); }
+body[data-skin="uprising"] .space-name { top: 8px; left: 7px; right: 26px; font-size: 11px; font-weight: 600; letter-spacing: .045em; text-shadow: none; color: #f0e4cd; line-height: 1.25; }
+body[data-skin="uprising"] .space-cost { top: 5px; right: 5px; background: #07161dcc; border: 0; border-radius: 4px; padding: 2px 3px; }
+body[data-skin="uprising"] .space-cost img, body[data-skin="uprising"] .space-rewards img { width: 16px; height: 16px; }
+body[data-skin="uprising"] .space-rewards { left: 7px; bottom: 6px; gap: 4px; }
+body[data-skin="uprising"] .space-rewards .icon-count { font-size: 11px; }
+body[data-skin="uprising"] .space-tile.legal { border-color: #dec99496; box-shadow: 0 0 0 1px #dec99420, 0 3px 12px #0004; }
+body[data-skin="uprising"] .space-tile.legal::before { content: ""; position: absolute; top: 6px; left: -2px; width: 3px; height: 14px; background: #f6ddb0; box-shadow: 0 0 9px #e8c788; }
+body[data-skin="uprising"] .space-tile:hover, body[data-skin="uprising"] .space-tile.selected { border-color: #a2dadb; box-shadow: 0 0 0 2px #9dd6d830, 0 6px 16px #0005; transform: translateY(-2px); }
+body[data-skin="uprising"] .space-tile.unreachable { opacity: .34; filter: saturate(.55); }
+body[data-skin="uprising"] .space-tile.choice-target { border-color: #9fdfd6; box-shadow: 0 0 0 2px #79bfb85c; opacity: 1; }
+body[data-skin="uprising"] .space-tile .agents { gap: 3px; }
+body[data-skin="uprising"] .agents i { width: 23px; height: 23px; border-width: 2px; box-shadow: 0 2px 5px #0008, inset 0 1px 4px #fff4; }
+body[data-skin="uprising"] .observation-links line { stroke: #aabfb23b; stroke-width: 1; stroke-dasharray: 3 5; }
+body[data-skin="uprising"] .observation-post { min-width: 13px; min-height: 13px; border-color: #a6b5a550; background: #203130; box-shadow: 0 0 0 3px #101c21; }
+body[data-skin="uprising"] .observation-post.occupied { border-color: #bdd9c1; box-shadow: 0 0 0 3px #122126, 0 0 12px #97c9b46b; }
+body[data-skin="uprising"] .faction-ladder { border: 1px solid #a8b5aa22; border-radius: 6px; background: #12232ac9; overflow: visible; }
+body[data-skin="uprising"] .ladder-head { padding: 2px; min-height: 20px; }
+body[data-skin="uprising"] .ladder-head img { width: 17px; height: 17px; }
+body[data-skin="uprising"] .ladder-rung { border-top-color: #acc2bd18; }
+body[data-skin="uprising"] .rung-markers { gap: 2px; }
+body[data-skin="uprising"] .rung-markers i { width: 6px; height: 7px; }
+body[data-skin="uprising"] .rung-bonus { width: 11px; height: 11px; left: -13px; }
+
+/* Seat panels have fixed territory; no faction track sits behind a portrait. */
+body[data-skin="uprising"] .player-strip { top: 110px; left: 16px; width: 182px; max-height: calc(100% - 354px); gap: 14px; padding: 0; }
+body[data-skin="uprising"] .human-corner { left: 16px; bottom: 20px; width: 182px; }
+body[data-skin="uprising"] .plaque { background: linear-gradient(130deg, #1c3036, #102026); border: 1px solid #9aaea62d; border-top: 2px solid var(--player-color); border-radius: 9px; padding: 9px; filter: none; }
+body[data-skin="uprising"] .plaque.active { box-shadow: 0 0 0 1px color-mix(in srgb, var(--player-color) 35%, transparent); }
+body[data-skin="uprising"] .plaque-top { min-height: 45px; padding: 0; gap: 9px; background: none; align-items: center; }
+body[data-skin="uprising"] .plaque-top::before { display: none; }
+body[data-skin="uprising"] .plaque-portrait, body[data-skin="uprising"] .human-corner .plaque-portrait { width: 43px; height: 43px; }
+body[data-skin="uprising"] .plaque-art { width: 100%; height: 100%; border: 1px solid #b9c7b23d; border-radius: 50%; object-fit: cover; }
+body[data-skin="uprising"] .vp-medallion { width: 33px; height: 33px; font-size: 18px; }
+body[data-skin="uprising"] .plaque-name { margin-top: 8px; padding: 0; background: none; border: 0; clip-path: none; font-size: 11px; font-weight: 600; letter-spacing: .025em; white-space: normal; line-height: 1.3; }
+body[data-skin="uprising"] .plaque-stats { padding: 7px 0 2px; gap: 6px 8px; width: 100%; flex-wrap: wrap; background: none; clip-path: none; }
+body[data-skin="uprising"] .plaque-stats .stat-chip { display: inline-flex; font-size: 12px; gap: 3px; }
+body[data-skin="uprising"] .plaque-stats .stat-chip b { position: static; text-shadow: none; }
+body[data-skin="uprising"] .stat-chip img { width: 17px; height: 17px; }
+body[data-skin="uprising"] .plaque-objective { margin-top: 6px; padding: 3px 0; border: 0; background: transparent; font-size: 8px; color: #b1c3bf; }
+body[data-skin="uprising"] .council-seat { padding: 4px 0 0; font-size: 8px; opacity: .8; }
+body[data-skin="uprising"] .plaque-revealed-tag { right: 0; top: -4px; font-size: 7px; }
+
+/* Readable market rows open a keyboard/touch-accessible card inspector. */
+body[data-skin="uprising"] .imperium-rail { top: 110px; right: 16px; bottom: 20px; width: 178px; padding: 11px; gap: 8px; border-radius: 9px; background: #0c1b21ce; border-color: #849d9133; }
+body[data-skin="uprising"] .market-heading { display: grid; gap: 5px; margin-bottom: 2px; }
+body[data-skin="uprising"] .market-heading strong { font-family: Georgia, serif; font-size: 19px; font-weight: 400; color: #eed9b7; }
+body[data-skin="uprising"] .rail-tab { position: absolute; right: 11px; top: 11px; border: 0; background: none; font-size: 10px; color: #a9bfc0; }
+body[data-skin="uprising"] .rail-tab img { width: 13px; height: 13px; }
+body[data-skin="uprising"] .rail-cards { gap: 8px; }
+body[data-skin="uprising"] .rail-card { border: 1px solid #79978b3a; border-radius: 5px; }
+body[data-skin="uprising"] .rail-card:hover { border-color: #c7b17c; }
+body[data-skin="uprising"] .rail-card .readable-card { height: 100%; aspect-ratio: auto; border: 0; border-radius: 0; }
+body[data-skin="uprising"] .rail-card .readable-card > header { padding: 7px 9px; min-height: 37px; }
+body[data-skin="uprising"] .rail-card .readable-card > header > strong { padding-right: 13px; font-size: 12px; }
+body[data-skin="uprising"] .rail-card .readable-card-scene { min-height: 12px; }
+body[data-skin="uprising"] .rail-card .card-emblem { width: 22px; height: 22px; padding: 2px; }
+body[data-skin="uprising"] .rail-card .readable-card-rules { padding: 3px 8px; }
+body[data-skin="uprising"] .rail-card .card-rule-summary { display: none; }
+body[data-skin="uprising"] .rail-card .card-rule-line:not(.reveal) { display: none; }
+body[data-skin="uprising"] .rail-card .card-rule-line.reveal { margin: 0; padding: 0; border: 0; min-height: 17px; }
+body[data-skin="uprising"] .rail-card .card-zoom, body[data-skin="uprising"] .rail-reserve .card-zoom { display: none; }
+body[data-skin="uprising"] .rail-reserves { gap: 7px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+body[data-skin="uprising"] .rail-reserve { aspect-ratio: auto; border-radius: 4px; overflow: hidden; background: #182b30; }
+body[data-skin="uprising"] .rail-reserve .readable-card { height: 85px; aspect-ratio: auto; }
+body[data-skin="uprising"] .rail-reserve .readable-card > header > strong { font-size: 11px; padding-right: 0; }
+body[data-skin="uprising"] .rail-reserve .readable-card-cost { width: 15px; height: 15px; font-size: 9px; }
+body[data-skin="uprising"] .rail-reserve .readable-card-scene, body[data-skin="uprising"] .rail-reserve .readable-card-rules { display: none; }
+body[data-skin="uprising"] .uprising-choam-market { border-color: #80989033; }
+
+body[data-skin="uprising"] .conflict-panel { top: 56%; left: 68%; width: 31.7%; min-width: 0; border: 1px solid #c19e6c45; border-radius: 8px; background: linear-gradient(140deg, #302b25, #17272b); }
+body[data-skin="uprising"] .conflict-header { flex-wrap: wrap; padding: 8px; gap: 5px; background: #c7a0620f; border-bottom: 1px solid #ceb38129; }
+body[data-skin="uprising"] .conflict-title { flex-basis: 100%; color: #ead5ad; font-size: 10px; letter-spacing: .05em; }
+body[data-skin="uprising"] .conflict-round { margin-left: auto; font-size: 8px; border: 0; }
+body[data-skin="uprising"] .conflict-body { gap: 8px; padding: 8px; }
+body[data-skin="uprising"] .conflict-card { width: 52px; border: 0; border-radius: 4px; background: none; }
+body[data-skin="uprising"] .conflict-card .readable-card { min-height: 100px; }
+body[data-skin="uprising"] .conflict-card .readable-card > header { min-height: 0; padding: 4px; }
+body[data-skin="uprising"] .conflict-card .readable-card > header > strong { font-size: 7px; padding: 0; }
+body[data-skin="uprising"] .conflict-card .readable-card-rules { padding: 2px; }
+body[data-skin="uprising"] .conflict-card .card-rule-line img { width: 10px; height: 10px; }
+body[data-skin="uprising"] .conflict-card .card-rule-line { min-height: 15px; }
+body[data-skin="uprising"] .conflict-card .card-rule-line > span { font-size: 6px; }
+body[data-skin="uprising"] .conflict-card .card-rule-line .icon-count { font-size: 8px; }
+body[data-skin="uprising"] .combat-rows { min-width: 0; gap: 4px; flex: 1; }
+body[data-skin="uprising"] .combat-row { gap: 4px; min-height: 26px; background: #0b191d5e; border-radius: 4px; padding: 3px; border-left: 2px solid var(--player-color); }
+body[data-skin="uprising"] .combat-portrait { width: 23px; height: 23px; }
+body[data-skin="uprising"] .combat-player-name { display: block; flex: 1; min-width: 0; max-width: 90px; font-size: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #bbceca; }
+body[data-skin="uprising"] .combat-strength { font-size: 11px; padding: 1px; min-width: 29px; border: 0; background: none; }
+body[data-skin="uprising"] .combat-strength img { width: 13px; height: 13px; }
+body[data-skin="uprising"] .combat-troops { gap: 2px; max-width: 40px; flex-wrap: wrap; }
+body[data-skin="uprising"] .combat-troops i { width: 5px; height: 5px; }
+body[data-skin="uprising"] .intrigue-drop-zone { left: 73%; top: 92%; width: 24%; min-height: 35px; border-radius: 6px; border-color: #8ca3953a; }
+
+/* Hand cards are fully above the viewport edge and never cover board spaces. */
+body[data-skin="uprising"] .table-cards { left: 222px; right: 218px; bottom: 0; height: 220px; border-top: 1px solid #a5b29b29; }
+body[data-skin="uprising"] .hand-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 145px 10px 0; color: #849c9c; font-size: 11px; }
+body[data-skin="uprising"] .hand-toolbar b { color: #ddc9a4; font-weight: 500; }
+.hand-toolbar button { border: 1px solid #9cae8a50; background: #1e3034; color: #cfded7; font-size: 10px; border-radius: 4px; padding: 5px 8px; cursor: pointer; }
+body[data-skin="uprising"] .hand-fan { bottom: 14px; left: 0; right: 145px; gap: 8px; align-items: flex-end; }
+body[data-skin="uprising"] .hand-card { width: clamp(94px, 8vw, 125px); flex: 0 0 auto; margin: 0 -3px; }
+body[data-skin="uprising"] .hand-card:hover .small-card { transform: translateY(-13px); }
+body[data-skin="uprising"] .hand-card.selected .small-card { transform: translateY(-14px); border-color: #92d0ce; box-shadow: 0 0 0 2px #9bdad078, 0 15px 26px #0006; }
+body[data-skin="uprising"] .hand-card:focus-visible { border-radius: 8px; }
+body[data-skin="uprising"] .intrigue-cluster { right: 0; left: auto; bottom: 80px; width: 135px; max-width: 135px; }
+body[data-skin="uprising"] .intrigue-row { overflow-x: auto; max-width: 100%; padding: 12px 3px 3px; scrollbar-width: thin; }
+body[data-skin="uprising"] .intrigue-card { width: 76px; flex: 0 0 auto; }
+body[data-skin="uprising"] .reveal-corner { right: 224px; bottom: 18px; gap: 6px; }
+body[data-skin="uprising"] .persuasion-gem { width: 34px; height: 34px; font-size: 16px; }
+body[data-skin="uprising"] .reveal-button { min-width: 110px; min-height: 37px; padding: 9px 16px; font-size: 10px; letter-spacing: .12em; border-radius: 5px; clip-path: none; background: linear-gradient(140deg, #d7bb80, #967644); color: #142126; text-shadow: none; border: 1px solid #efd29a; }
+body[data-skin="uprising"] .prompt-dock { bottom: 222px; width: min(640px, calc(100vw - 455px)); max-height: 45vh; border-radius: 10px; border-color: #c3af8055; padding: 14px; background: #0b1d24fa; }
+body[data-skin="uprising"] .acquire-overlay { inset: 96px 210px 225px 210px; border: 1px solid #b39c6c55; border-radius: 10px; background: #112127f5; }
+body[data-skin="uprising"] .acquire-overlay { padding: 18px; grid-template-rows: auto minmax(0, 1fr); gap: 14px; }
+body[data-skin="uprising"] .acquire-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-right: 42px; }
+body[data-skin="uprising"] .acquire-heading h2 { margin: 4px 0 0; font: 24px Georgia, serif; color: #e8d9b8; }
+body[data-skin="uprising"] .acquire-heading p { display: flex; align-items: center; gap: 6px; margin: 0; color: #b9ccca; font-size: 12px; }
+body[data-skin="uprising"] .acquire-heading img { width: 20px; height: 20px; }
+body[data-skin="uprising"] .acquire-heading b { font-size: 22px; color: #e8d9b8; }
+body[data-skin="uprising"] .acquire-close-button { top: 18px; right: 18px; }
+body[data-skin="uprising"] .acquire-table { padding: 0; grid-template-columns: minmax(0, 1fr) 130px; gap: 18px; border: 0; border-radius: 0; background: none; box-shadow: none; }
+body[data-skin="uprising"] .acquire-row { gap: 10px; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+body[data-skin="uprising"] .acquire-card.affordable .acquire-card-image { box-shadow: 0 0 0 1px #8ecaca88, 0 6px 16px #0004; }
+body[data-skin="uprising"] .acquire-table .persuasion-drop-target { position: absolute; width: 86px; left: 40%; bottom: 12px; }
+body[data-skin="uprising"] .acquire-table .persuasion-drop-target span { font-size: 30px; }
+body[data-skin="uprising"] .acquire-table .persuasion-drop-target b { font-size: 28px; }
+body[data-skin="uprising"] .drawer { border-color: #a9b29a40; background: #0e2128fa; }
+body[data-skin="uprising"] .drawer-header { background: #26353a; }
+body[data-skin="uprising"] .drawer-close { min-width: 36px; min-height: 36px; }
+
+/* Leader selection uses the same restrained table palette and legible seals. */
+body[data-skin="uprising"] .leader-select { background: radial-gradient(ellipse at 75% 50%, #45533c45, transparent 60%), linear-gradient(125deg, #081a21, #1c2828); }
+body[data-skin="uprising"] .ls-top h1 { font-family: Georgia, serif; font-size: clamp(24px, 3vw, 38px); letter-spacing: .14em; font-weight: 400; color: #efdbb5; }
+body[data-skin="uprising"] .ls-hex { border-radius: 10px; aspect-ratio: .8; display: flex; flex-direction: column; padding: 5px; background: #193038; }
+body[data-skin="uprising"] .ls-hex.selected::after { border-radius: 6px; border-color: #d3be8955; }
+body[data-skin="uprising"] .ls-hex.selected { border-color: #dec89a; box-shadow: 0 0 0 1px #d3be8980, 0 8px 20px #0005; }
+body[data-skin="uprising"] .ls-hex-art { height: 70%; object-fit: cover; border-radius: 6px; }
+body[data-skin="uprising"] .ls-leader-name { display: block; margin: 5px 1px; font-size: 10px; line-height: 1.3; color: #d4d4bd; }
+body[data-skin="uprising"] .ls-portrait-art { width: 100%; object-fit: cover; border-radius: 48% 48% 10px 10px; border: 1px solid #bea16a50; }
+body[data-skin="uprising"] .ls-detail h2 { font-family: Georgia, serif; font-weight: 400; font-size: 30px; color: #f0dfbe; }
+body[data-skin="uprising"] .ls-ability p { line-height: 1.7; color: #bed0cc; }
+body[data-skin="uprising"] .uprising-preview-space { border-color: #a8b9a835; }
+
+/* Brief, unobtrusive effects. Input and board information stay available. */
+#fx-layer.blocking { pointer-events: none; }
+.fx-skip-hint { pointer-events: auto; border: 1px solid #dac38966; border-radius: 18px; padding: 8px 14px; background: #13262efa; color: #e5d4af; cursor: pointer; font: 11px system-ui, sans-serif; }
+.fx-brief { position: absolute; left: 50%; top: 94px; transform: translateX(-50%); display: grid; grid-template-columns: 34px 1fr; gap: 3px 10px; align-items: center; max-width: min(430px, 90vw); padding: 11px 16px; border: 1px solid #bfc9b044; border-left: 3px solid var(--player-color, #d3b681); border-radius: 9px; background: #0c2029f5; box-shadow: 0 8px 32px #0005; pointer-events: none; animation: brief-in 180ms ease-out both; }
+.fx-brief > img { grid-row: span 2; width: 34px; height: 34px; object-fit: cover; border-radius: 50%; }
+.fx-brief strong { font-size: 12px; font-weight: 500; color: #ecdfc4; }
+.fx-brief span { font-size: 10px; color: #a7c2bf; }
+.fx-brief.leaving { opacity: 0; transition: opacity 150ms; }
+@keyframes brief-in { from { opacity: 0; margin-top: -8px; } to { opacity: 1; margin-top: 0; } }
+.fx-worm-ring { border-color: #dcb67c; box-shadow: 0 0 35px #d79f4255; }
+.fx-float { z-index: 4; font-size: 15px; padding: 5px 8px; border-radius: 7px; background: #0e252ae8; text-shadow: 0 2px 4px #000; }
+.fx-float.loss { color: #eda798; }
+
+@media (max-height: 859px) and (min-width: 1101px) {
+  body[data-skin="uprising"] { overflow-y: auto; }
+  body[data-skin="uprising"] .game-screen { position: relative; height: 860px; }
+}
+@media (max-width: 1100px) {
+  body[data-skin="uprising"] { overflow: auto; }
+  body[data-skin="uprising"] .game-screen { position: relative; display: flex; flex-direction: column; gap: 14px; min-height: 100dvh; overflow: visible; padding: 0 14px 20px; }
+  body[data-skin="uprising"] .table-masthead { position: relative; margin: 0 -14px; min-height: 95px; height: auto; flex-wrap: wrap; gap: 12px; padding: 15px; }
+  body[data-skin="uprising"] .table-wordmark { width: 180px; }
+  body[data-skin="uprising"] .table-phase { display: none; }
+  body[data-skin="uprising"] .instruction-bar { position: relative; order: 1; inset: auto; padding: 0; width: 100%; white-space: normal; overflow: visible; }
+  body[data-skin="uprising"] .top-icons { top: 17px; right: 15px; }
+  body[data-skin="uprising"] .uprising-global-status { display: none; }
+  body[data-skin="uprising"] .board-viewport { position: relative; order: 3; inset: auto; width: 100%; height: 620px; min-height: 620px; overflow: auto; scrollbar-width: thin; scrollbar-color: #96886c #17272d; padding: 3px; border: 1px solid #9aa58c26; border-radius: 7px; }
+  body[data-skin="uprising"] .board-layer { min-width: 790px; height: 590px; }
+  body[data-skin="uprising"] .player-strip { position: relative; order: 2; inset: auto; flex-direction: row; width: 100%; max-height: none; overflow: auto; display: flex; gap: 8px; }
+  body[data-skin="uprising"] .player-strip .plaque { flex: 1 0 160px; max-width: 250px; }
+  body[data-skin="uprising"] .plaque-objective, body[data-skin="uprising"] .player-strip .council-seat { display: none; }
+  body[data-skin="uprising"] .human-corner { position: relative; order: 4; inset: auto; width: 100%; transform: none; }
+  body[data-skin="uprising"] .human-corner .plaque { display: grid; grid-template-columns: 150px 1fr; gap: 4px 14px; }
+  body[data-skin="uprising"] .human-corner .plaque-stats { grid-column: 2; grid-row: 1 / 3; align-content: center; }
+  body[data-skin="uprising"] .human-corner .council-seat { display: none; }
+  body[data-skin="uprising"] .human-corner .plaque-name { margin: 0; }
+  body[data-skin="uprising"] .table-cards { position: relative; order: 5; inset: auto; height: 220px; }
+  body[data-skin="uprising"] .hand-fan { justify-content: flex-start; gap: 8px; right: 95px; overflow-x: auto; padding: 18px 4px 4px; bottom: 0; pointer-events: auto; }
+  body[data-skin="uprising"] .hand-card { width: 112px; margin: 0; }
+  body[data-skin="uprising"] .hand-toolbar small { display: none; }
+  body[data-skin="uprising"] .reveal-corner { position: relative; order: 6; inset: auto; flex-direction: row; justify-content: flex-end; transform: none; }
+  body[data-skin="uprising"] .imperium-rail { position: relative; order: 7; inset: auto; width: 100%; display: block; }
+  body[data-skin="uprising"] .rail-cards { display: grid; grid-template-columns: repeat(5, minmax(135px, 1fr)); grid-template-rows: none; overflow-x: auto; margin-top: 14px; padding-bottom: 8px; }
+  body[data-skin="uprising"] .rail-card { height: 150px; }
+  body[data-skin="uprising"] .rail-reserves { width: 200px; margin-top: 8px; }
+  body[data-skin="uprising"] .uprising-choam-market { width: 200px; }
+  body[data-skin="uprising"] .prompt-dock { position: fixed; bottom: 14px; width: min(600px, 94vw); max-height: 55dvh; z-index: 65; }
+  body[data-skin="uprising"] .acquire-overlay { position: fixed; inset: 12px; z-index: 61; overflow-y: auto; background: #112127; }
+  body[data-skin="uprising"] .space-name { font-size: 10px; }
+  body[data-skin="uprising"] .drawer { position: fixed; top: 10px; right: 10px; bottom: 10px; max-height: calc(100dvh - 20px); z-index: 80; }
+  body[data-skin="uprising"] .conflict-panel { max-height: none; bottom: auto; overflow: visible; }
+  body[data-skin="uprising"] .board-viewport::-webkit-scrollbar, body[data-skin="uprising"] .hand-fan::-webkit-scrollbar { display: block; height: 5px; }
+}
+@media (max-width: 600px) {
+  .game-result h2 { font-size: 21px; margin: 4px 0 12px; }
+  .game-result > header { padding-top: 12px; }
+  .game-result .confirm-button { padding: 8px; min-width: 90px; font-size: 10px; }
+  .card-zoom { display: none !important; }
+  body[data-skin="uprising"] .table-round { display: none; }
+  body[data-skin="uprising"] .table-wordmark strong { font-size: 22px; }
+  body[data-skin="uprising"] { overflow-x: hidden; }
+  body[data-skin="uprising"] .game-screen { padding: 0 10px 295px; }
+  body[data-skin="uprising"] .table-masthead { margin-inline: -10px; }
+  body[data-skin="uprising"] .uprising-global-status { display: flex; position: absolute; right: 0; top: 45px; width: calc(100vw - 30px); justify-content: flex-start; }
+  body[data-skin="uprising"] .uprising-global-chip b { display: inline; }
+  body[data-skin="uprising"] .board-viewport { height: 540px; min-height: 540px; }
+  body[data-skin="uprising"] .table-cards { position: fixed; left: 0; right: 0; bottom: 0; height: 190px; padding-inline: 10px; z-index: 34; background: #102128f7; backdrop-filter: blur(12px); }
+  body[data-skin="uprising"] .hand-fan { left: 10px; right: 78px; bottom: 6px; }
+  body[data-skin="uprising"] .hand-card { width: 94px; }
+  body[data-skin="uprising"] .human-corner { position: fixed; left: 0; right: 0; bottom: 190px; width: 100%; z-index: 34; }
+  body[data-skin="uprising"] .human-corner .plaque { border-radius: 6px 6px 0 0; grid-template-columns: 84px 1fr; padding: 7px 10px; background: #152b31fa; }
+  body[data-skin="uprising"] .human-corner .plaque-portrait { display: none; }
+  body[data-skin="uprising"] .human-corner .plaque-top { min-height: 36px; }
+  body[data-skin="uprising"] .human-corner .plaque-name { font-size: 8px; }
+  body[data-skin="uprising"] .human-corner .plaque-stats { min-width: 0; gap: 5px 8px; padding: 0; }
+  body[data-skin="uprising"] .reveal-corner { position: fixed; right: 8px; bottom: 10px; z-index: 35; flex-direction: column; }
+  body[data-skin="uprising"] .reveal-button { min-width: 70px; padding: 10px 5px; font-size: 9px; }
+  body[data-skin="uprising"] .intrigue-cluster { bottom: 130px; right: 8px; width: 70px; }
+  body[data-skin="uprising"] .intrigue-card { width: 62px; }
+  body[data-skin="uprising"] .intrigue-card .readable-card { height: 40px; aspect-ratio: auto; }
+  body[data-skin="uprising"] .intrigue-card .readable-card > header { min-height: 0; padding: 5px; }
+  body[data-skin="uprising"] .intrigue-card .readable-card > header > strong { font: 10px Georgia, serif; padding: 0; }
+  body[data-skin="uprising"] .intrigue-card .readable-card > header > span,
+  body[data-skin="uprising"] .intrigue-card .readable-card-scene,
+  body[data-skin="uprising"] .intrigue-card .readable-card-rules { display: none; }
+  body[data-skin="uprising"] .intrigue-card:hover .small-card,
+  body[data-skin="uprising"] .intrigue-card.selected .small-card { transform: none; }
+  body[data-skin="uprising"] .intrigue-row { padding-top: 2px; }
+  body[data-skin="uprising"] .acquire-overlay { bottom: 193px; }
+  body[data-skin="uprising"] .acquire-table { display: flex; flex-direction: column; overflow: auto; }
+  body[data-skin="uprising"] .acquire-main { width: 100%; }
+  body[data-skin="uprising"] .acquire-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body[data-skin="uprising"] .acquire-side { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body[data-skin="uprising"] .acquire-side > .zone-label { grid-column: 1 / -1; }
+  body[data-skin="uprising"] .acquire-played { display: none; }
+  body[data-skin="uprising"] .acquire-table .persuasion-drop-target { display: none; }
+  body[data-skin="uprising"] .acquire-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+  body[data-skin="uprising"] .player-strip .plaque { flex-basis: 162px; }
+  body[data-skin="uprising"] .hand-toolbar { gap: 8px; padding-right: 78px; }
+  body[data-skin="uprising"] .hand-toolbar button { max-width: 220px; min-height: 32px; }
+  body[data-skin="uprising"] .top-icon { min-width: 34px; min-height: 34px; }
+  body[data-skin="uprising"] .leader-select { position: relative; min-height: 100dvh; overflow: visible; padding: 20px; }
+  body[data-skin="uprising"] .ls-body { display: flex; flex-direction: column; gap: 20px; }
+  body[data-skin="uprising"] .ls-hexes { width: 100%; gap: 8px; }
+  body[data-skin="uprising"] .ls-portrait { display: none; }
+  body[data-skin="uprising"] .ls-footer { flex-direction: column; gap: 16px; align-items: stretch; }
+  body[data-skin="uprising"] .ls-roster { display: none; }
+  .card-inspector { padding: 28px 18px; }
+  .card-inspector[open] { grid-template-columns: 1fr; gap: 15px; }
+  .inspector-art { width: 160px; margin: auto; }
+  .inspector-copy h2 { font-size: 24px; }
+  .fx-brief { top: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  .fx-spark, .fx-confetti, .fx-fly-card, .fx-fly-troop, .fx-ghost-pawn, .fx-ring { display: none !important; }
+}
+
+body[data-skin="uprising"] .rail-reserve > span { top: auto; right: 5px; bottom: 5px; }
+body[data-skin="uprising"] .choam-contract { padding: 0; border-radius: 5px; cursor: pointer; }
+body[data-skin="uprising"] .choam-contract .card-zoom { display: none; }
+body[data-skin="uprising"] .choam-contract .readable-card > header { min-height: 45px; padding: 5px; }
+body[data-skin="uprising"] .choam-contract .readable-card > header > strong { font-size: 10px; padding: 0; }
+body[data-skin="uprising"] .choam-contract .readable-card-rules { display: none; }
+
+/* Standard Uprising board geometry, following the publisher's setup spread. */
+body[data-skin="uprising"] .board-layer { isolation: isolate; border: 1px solid #77898b38; border-radius: 7px; background: #111e28; overflow: visible; }
+body[data-skin="uprising"] .board-terrain { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; z-index: -1; }
+.board-terrain svg { width: 100%; height: 100%; }
+.desert-surface { fill: #8d6237; fill-opacity: .36; }
+.desert-ridge { fill: none; stroke: #d5a56b; stroke-width: .4; stroke-opacity: .15; }
+.shielded-region { fill: #b8a48a; fill-opacity: .16; stroke: #bfb09b; stroke-width: .3; stroke-opacity: .5; }
+.board-faction-region, .board-council-region, .board-choam-region { position: absolute; border: 1px solid #bdc1ab28; border-radius: 4px; pointer-events: none; }
+.board-faction-region { left: .3%; width: 26.5%; height: 23%; background: #92949c20; }
+.board-faction-region.spacing_guild { background: #a4344a30; }
+.board-faction-region.bene_gesserit { background: #70439235; }
+.board-faction-region.fremen { background: #3376a238; }
+.board-faction-region > span { position: absolute; left: 25%; bottom: 5%; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 7px; letter-spacing: .08em; text-transform: uppercase; color: #d4d2bd99; }
+.board-council-region { left: 28%; top: 1%; width: 48%; height: 26%; background: #3d73462e; }
+.board-choam-region { left: 77%; top: 1%; width: 18%; height: 26%; background: #9b663b35; }
+body[data-skin="uprising"] .board-heading { top: 1.3%; font: 9px system-ui, sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+body[data-skin="uprising"] .board-heading.council { left: 29%; }
+body[data-skin="uprising"] .board-heading.commerce { left: 78%; }
+body[data-skin="uprising"] .arrakis-label { left: 48%; top: 67%; bottom: auto; font-size: 20px; color: #d6ae7638; }
+body[data-skin="uprising"] .space-tile { border-radius: 4px; }
+body[data-skin="uprising"] .space-tile.emperor { --space-color: #bcbfc9; }
+body[data-skin="uprising"] .space-tile.spacing_guild { --space-color: #d45265; }
+body[data-skin="uprising"] .space-tile.cities { --space-color: #8496d9; }
+body[data-skin="uprising"] .space-name { top: 6px; font-size: 10px; }
+body[data-skin="uprising"] .space-rewards { bottom: 4px; }
+body[data-skin="uprising"] .faction-ladder { background: #111922b0; }
+body[data-skin="uprising"] .rung-bonus { left: 1px; width: 9px; height: 9px; }
+body[data-skin="uprising"] .rung-markers { margin-left: 10px; gap: 1px; }
+body[data-skin="uprising"] .observation-post { padding: 2px; width: 15px; height: 15px; min-width: 15px; min-height: 15px; opacity: 1; }
+body[data-skin="uprising"] .observation-post:disabled { cursor: default; }
+body[data-skin="uprising"] .observation-post.choice-target { border-color: #c7fff1; box-shadow: 0 0 0 5px #85d3c74a, 0 0 15px #79d5be; cursor: pointer; }
+body[data-skin="uprising"] .observation-links line { stroke: #d3d8c481; stroke-dasharray: none; stroke-width: 1; }
+.shield-wall-token { position: absolute; left: 58%; top: 46.4%; width: 14%; height: 5.5%; display: flex; gap: 5px; align-items: center; justify-content: center; transform: rotate(8deg); border: 2px solid #c9ac7a; background: repeating-linear-gradient(120deg,#806449 0 8px,#55473a 9px 13px); color: #f0dfc2; clip-path: polygon(5% 0,88% 0,100% 80%,96% 100%,9% 100%,0 20%); box-shadow: 0 3px 8px #0008; }
+.shield-wall-token span { font: 9px Georgia,serif; }
+.shield-wall-token b { font-size: 7px; text-transform: uppercase; }
+.shield-wall-token.fallen { opacity: .4; border-style: dashed; background: transparent; }
+.board-vp-track { position: absolute; top: 30%; right: .3%; bottom: .7%; width: 5.6%; display: flex; flex-direction: column; border: 1px solid #c5af7755; border-radius: 4px; overflow: hidden; background: #2f2a22; }
+.board-track-space { position: relative; display: flex; flex: 1; align-items: center; justify-content: space-between; gap: 2px; min-height: 0; padding: 1px 3px; border-bottom: 1px solid #aeaa8b2c; color: #c9c4ab; font-size: 9px; }
+.board-track-space.finish { color: #ffe2a1; background: #b0883e30; }
+.board-track-markers { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 1px; }
+.board-track-markers > i { display: grid; place-items: center; flex: 0 0 auto; width: 9px; height: 9px; border: 1px solid #ffffffaa; border-radius: 50%; background: var(--player-color); color: #fff; font: 6px system-ui,sans-serif; text-shadow: 0 1px 2px #000; }
+.board-combat-track { position: absolute; left: 28%; right: 6.5%; bottom: .7%; height: 5%; display: grid; grid-template-columns: repeat(11,minmax(0,1fr)); grid-template-rows: 1fr 1fr; background: #522c2c; border: 1px solid #a6786544; }
+.board-combat-track .board-track-space { border-right: 1px solid #dba99533; font-size: 8px; }
+.board-combat-track [data-combat-level="0"] { grid-row: span 2; }
+.board-combat-track .board-track-markers > i { border-radius: 1px; }
+body[data-skin="uprising"] .conflict-panel.uprising-conflict-field { left: 28%; top: 76%; width: 65.5%; height: 18%; padding: 0; background: transparent; border: 0; border-radius: 0; overflow: visible; }
+body[data-skin="uprising"] .uprising-conflict-field > .conflict-card { position: absolute; left: 0; top: 0; width: 12%; height: 100%; background: #15272a; }
+body[data-skin="uprising"] .uprising-conflict-field .conflict-card > .readable-card { height: 100%; min-height: 0; }
+body[data-skin="uprising"] .uprising-conflict-field .conflict-card .readable-card-rules { display: none; }
+.conflict-arena { position: absolute; left: 26%; top: 0; width: 58%; height: 100%; border: 1px solid #c5937b55; background: #77484240; border-radius: 5px; overflow: hidden; }
+.conflict-arena > header { display: flex; align-items: center; gap: 5px; height: 22%; padding: 2px 5px; background: #32251fcc; }
+.conflict-arena > header > strong { flex: 1; min-width: 0; color: #ead8b6; font-size: 9px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.conflict-arena .uprising-conflict-battle-icon { padding: 0; border: 0; background: transparent; }
+.conflict-arena .uprising-conflict-battle-icon b { display: none; }
+.conflict-arena .uprising-conflict-battle-icon img { width: 14px; height: 14px; }
+.conflict-arena .conflict-shield-badge { font-size: 7px; padding: 2px; }
+.conflict-quadrants { display: grid; height: 78%; grid-template: 1fr 1fr / 1fr 1fr; }
+.conflict-force { display: flex; align-items: center; flex-wrap: wrap; gap: 3px; padding: 3px 5px; min-height: 0; border-left: 2px solid var(--player-color); border-bottom: 1px solid #b0907533; background: color-mix(in srgb,var(--player-color) 5%,transparent); }
+.conflict-force.north-west { grid-area: 1 / 1; }.conflict-force.north-east { grid-area: 1 / 2; }
+.conflict-force.south-west { grid-area: 2 / 1; }.conflict-force.south-east { grid-area: 2 / 2; }
+.force-owner { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #d7d0bd; font-size: 7px; line-height: 1; }
+.field-troops, .force-strength { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; }
+.field-troops img, .force-strength img { width: 13px; height: 13px; }
+.force-strength { margin-left: auto; color: #e2c6ba; }
+.field-troops b { color: var(--player-color); }
+.field-troops .combat-sandworms { font-size: 8px; padding: 0; border: 0; }
+.field-troops .worm-double { display: none; }
+.board-garrison { position: absolute; display: flex; flex-wrap: wrap; align-content: center; align-items: center; justify-content: center; gap: 2px; width: 12%; height: 44%; border: 1px solid color-mix(in srgb,var(--player-color) 50%,#aba284); border-radius: 50%; background: #243031cc; }
+.board-garrison.north-west { left: 13%; top: 0; }.board-garrison.south-west { left: 13%; bottom: 0; }
+.board-garrison.north-east { right: 0; top: 0; }.board-garrison.south-east { right: 0; bottom: 0; }
+.board-garrison > span { font-size: 6px; color: #c9c1ac; text-transform: uppercase; }.board-garrison > b { font-size: 11px; color: var(--player-color); }
+.garrison-cubes { display: flex; justify-content: center; flex-wrap: wrap; gap: 2px; width: 70%; }
+.garrison-cubes i { width: 5px; height: 5px; background: var(--player-color); border: 1px solid #ffffff66; }
+body[data-skin="uprising"] .intrigue-drop-zone { left: 51%; top: 68%; width: 25%; min-height: 32px; }
+@media (min-width: 1101px) and (max-height: 859px) {
+  body[data-skin="uprising"] .board-viewport { min-height: 555px; bottom: 225px; }
+  body[data-skin="uprising"] .game-screen { height: 900px; }
+}
+body[data-skin="uprising"] { --emperor: #bcbfc9; --spacing_guild: #d45265; --cities: #8496d9; }
+body[data-skin="uprising"] .readable-card.emperor { --card-accent: #bec1d2; }
+body[data-skin="uprising"] .readable-card.spacing_guild { --card-accent: #e58b9e; }
+body[data-skin="uprising"] .observation-post { pointer-events: auto; }
+body[data-skin="uprising"] .observation-links { width: 100%; height: 100%; }
+.board-garrison { width: auto; aspect-ratio: 1; }
+.board-garrison.north-west, .board-garrison.south-west { left: 16%; }
+.board-garrison.north-east, .board-garrison.south-east { right: 2%; }
+.board-vp-track::before { content: "VP"; flex: 0 0 12px; text-align: center; font-size: 8px; color: #efd090; background: #493d28; }
+
+/* Conditional printed rewards remain distinguishable from automatic gains. */
+body[data-skin="uprising"] .space-cost { display: flex; flex-direction: column; gap: 2px; align-items: flex-end; font-size: 9px; }
+.optional-cost, .influence-requirement { display: inline-flex; align-items: center; gap: 2px; }
+body[data-skin="uprising"] .space-rewards > span { display: inline-flex; align-items: center; gap: 2px; }
+body[data-skin="uprising"] .space-rewards { font-size: 11px; line-height: 1.2; }
+.space-or, .space-rewards em { font: 7px system-ui,sans-serif; color: #d3b994; }
+.conditional-reward { border-left: 1px dotted #d9c99a99; padding-left: 3px; color: #e2c694; }
+.board-council-seats { gap: 3px !important; }
+.council-marker { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #94a89588; background: #111f24; }
+.council-marker.seated { background: var(--player-color); border-color: #e0d2a9; box-shadow: inset 0 0 0 2px #263b3966; }
+.council-return { margin-left: 4px; padding-left: 5px; border-left: 1px solid #c9c59855; }
+body[data-skin="uprising"] .agent-composer { grid-template-columns: minmax(0,1fr) auto; }
+.space-rules { grid-column: 1 / -1; font-size: 11px; color: #bdd0c9; margin: 8px 0; }
+.space-rules summary { cursor: pointer; color: #d6c69f; }
+.space-rules p { white-space: pre-line; line-height: 1.5; max-height: 150px; overflow-y: auto; }
+body[data-skin="uprising"] .space-tile { overflow: visible; }
+body[data-skin="uprising"] .space-art { border-radius: 3px; }
+body[data-skin="uprising"] .space-name { top: 5px; font-size: 9.5px; line-height: 1.1; letter-spacing: .02em; }
+body[data-skin="uprising"] .space-tile .agents { left: -8px; right: auto; top: 50%; transform: translateY(-50%); flex-direction: column; gap: 1px; }
+body[data-skin="uprising"] .agents i { width: 16px; height: 16px; }
+@media (pointer: coarse) {
+  body[data-skin="uprising"] .observation-post.choice-target::after { content: ""; position: absolute; inset: -14px; border-radius: 50%; }
+}
+
+/* Cards sit above the board; the optional CHOAM module sits beside it. */
+@media (min-width: 1101px) {
+  body[data-skin="uprising"] .game-screen { height: max(100dvh, 1000px); min-height: 1000px; }
+  body[data-skin="uprising"] .board-viewport { top: 220px; bottom: 235px; min-height: 545px; }
+  body[data-skin="uprising"] .imperium-rail { left: 222px; right: 16px; top: 105px; bottom: auto; width: auto; height: 100px; display: grid; grid-template-columns: 100px minmax(0,1fr) 166px; align-items: center; padding: 8px; gap: 10px; overflow: visible; }
+  body[data-skin="uprising"] .market-heading strong { font-size: 16px; }
+  body[data-skin="uprising"] .market-heading .eyebrow { font-size: 7px; }
+  body[data-skin="uprising"] .rail-tab { left: 8px; right: auto; top: auto; bottom: 8px; }
+  body[data-skin="uprising"] .rail-cards { height: 82px; grid-template: 1fr / repeat(5,minmax(0,1fr)); }
+  body[data-skin="uprising"] .rail-card { min-height: 0; height: 82px; }
+  body[data-skin="uprising"] .rail-card .readable-card > header { min-height: 37px; padding: 5px 6px; }
+  body[data-skin="uprising"] .rail-card .readable-card > header > strong { font-size: 10px; }
+  body[data-skin="uprising"] .rail-card .readable-card-scene { min-height: 0; }
+  body[data-skin="uprising"] .rail-card .card-emblem { width: 18px; height: 18px; padding: 1px; }
+  body[data-skin="uprising"] .rail-reserves { height: 82px; }
+  body[data-skin="uprising"] .rail-reserve .readable-card { height: 82px; }
+  body[data-skin="uprising"] .rail-reserve .readable-card > header { padding: 5px; }
+  body[data-skin="uprising"] .rail-reserve .readable-card > header > strong { font-size: 10px; }
+  body[data-skin="uprising"] .choam-market { position: absolute; right: 0; top: 114px; width: 178px; padding: 10px; border: 1px solid #ab9a7038; border-radius: 6px; background: #16262a; }
+}
+@media (min-width: 1101px) and (max-height: 959px) {
+  body[data-skin="uprising"] .game-screen { height: 100dvh; min-height: 740px; }
+  body[data-skin="uprising"] .board-viewport { min-height: 0; overflow: auto; scrollbar-width: thin; scrollbar-color: #96886c #17272d; }
+  body[data-skin="uprising"] .board-layer { min-height: 545px; }
+  body[data-skin="uprising"] .player-strip { max-height: calc(100% - 345px); overflow-y: auto; scrollbar-width: thin; }
+}

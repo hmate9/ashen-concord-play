@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Tactic">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g fill="none" stroke="#4ce6ff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <path d="M17 15h30v34H17z"/>
+    <path d="M23 23h18M23 31h12M23 39h18"/>
+    <path d="M13 21l4-6M51 21l-4-6"/>
+  </g>
+</svg>

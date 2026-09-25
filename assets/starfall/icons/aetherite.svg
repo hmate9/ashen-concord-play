@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Aetherite">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g fill="none" stroke="#b55cff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <path d="M32 7l16 18-7 28H23l-7-28z"/>
+    <path d="M32 7v46M16 25h32M23 53l9-28 9 28"/>
+    <path d="M22 15l10 10 10-10"/>
+  </g>
+</svg>

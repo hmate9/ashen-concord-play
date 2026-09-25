@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ashen Concord · Card catalog</title><link rel="stylesheet" href="./concord.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101a1e;color:#e6dcc8;font:14px system-ui,sans-serif}
+main{max-width:1560px;margin:auto;padding:40px 28px}h1{font:48px Georgia,serif;margin:10px 0}h1 span{color:#b99268}
+.intro{max-width:680px;color:#aeb7b5;line-height:1.7}.eyebrow{letter-spacing:3px;text-transform:uppercase;color:#b99268;font-size:10px}
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:28px 0;padding-block:20px;border-block:1px solid #334145}
+label{display:grid;gap:6px;font-size:11px;color:#b7c0be}select,input,button{font:14px system-ui;color:#e6dcc8;background:#1d2c30;border:1px solid #526063;border-radius:4px;padding:10px}
+button{cursor:pointer}input{min-width:220px}.count{margin-left:auto;color:#b99268}.catalog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:28px;align-items:start}
+.catalog-entry{min-width:0}.catalog-entry>.ac-card{width:100%;height:440px}.catalog-entry .ac-card-header{height:100px;flex-basis:100px;padding:14px}
+.catalog-entry .ac-card-header strong{font-size:23px;line-height:1.1;padding-top:8px}.catalog-entry .ac-card-type{font-size:9px}
+.catalog-entry .ac-cost{top:30px;font-size:18px}.catalog-entry .ac-rules{padding:10px 14px;max-height:43%}.catalog-entry .ac-rules p{font-size:11px;line-height:1.35}
+.catalog-entry .ac-rule-row>span{font-size:9px}.catalog-entry .ac-card-footer{font-size:7px;padding:7px 14px}.catalog-entry .ac-icon{width:20px;height:20px}
+.catalog-entry .ac-factions .ac-icon{width:30px;height:30px}.entry-controls{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:11px;color:#99a8aa}
+.entry-controls button{font-size:11px;padding:6px 10px}.faction-key{display:flex;gap:20px;flex-wrap:wrap}.faction-key span{display:flex;align-items:center;gap:7px;font-size:12px}
+.ac-detail{max-width:760px;width:90vw;background:#e7dcc7;color:#222b2b;border:1px solid #b99268;padding:28px;border-radius:8px}.ac-detail::backdrop{background:#071014db}
+.ac-detail h2{font:30px Georgia,serif}.ac-detail p{font:16px/1.6 Georgia,serif}.ac-detail .close{float:right}.art-missing{outline:2px dashed #ba724e}.loading-status{color:#b99268}
+@media print{@page{size:A4;margin:10mm}body{background:white}main{padding:0}.catalog-header,.toolbar,.entry-controls,dialog{display:none!important}.catalog-grid{grid-template-columns:repeat(3,63mm);gap:4mm}.catalog-entry{break-inside:avoid}.catalog-entry>.ac-card{width:63mm;height:94mm;box-shadow:none;print-color-adjust:exact}.catalog-entry .ac-card-header strong{font-size:15px}.catalog-entry .ac-card-header{min-height:48px;padding:9px}.catalog-entry .ac-rules p{font-size:8px}.catalog-entry .ac-card-type{font-size:6px}.catalog-entry .ac-rules{padding:6px;max-height:48%}.catalog-entry .ac-card-footer{font-size:5px}.catalog-entry .ac-cost{top:22px;font-size:12px}.catalog-entry .ac-icon{width:14px;height:14px}}
+</style></head><body><main>
+<header class="catalog-header"><div class="eyebrow">An original frontier · Two editions · One visual language</div>
+<h1>Ashen <span>Concord</span></h1><p class="intro">Rival courts, secret archives, and the salt roads between them. An illustrated catalog of Founding and Insurgence, with generated paintings and precisely typeset cards.</p>
+<div id="factions" class="faction-key"></div></header>
+<section class="toolbar" aria-label="Catalog filters"><label>Edition<select id="edition"><option value="imperium">Founding</option><option value="uprising">Insurgence</option><option value="all">Both editions</option></select></label>
+<label>Kind<select id="kind"><option value="all">All</option><option value="imperium" selected>Concord cards</option><option value="other">Starter and reserve</option><option value="intrigue">Schemes</option><option value="leader">Leaders</option><option value="conflict">Conflicts</option><option value="location">Locations</option><option value="contract">Charters</option></select></label>
+<label>Search<input id="search" type="search" placeholder="Find a name or faction"></label><button id="print">Print visual proofs</button><span id="count" class="count" aria-live="polite"></span></section>
+<div id="catalog" class="catalog-grid"></div></main>
+<dialog id="details" class="ac-detail"><button class="close" type="button">Close</button><div class="detail-content"></div></dialog>
+<script src="./uprising_data.js"></script><script src="./concord-data.js"></script><script src="./concord.js"></script><script src="./concord-catalog.js"></script>
+</body></html>

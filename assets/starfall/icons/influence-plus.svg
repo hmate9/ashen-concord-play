@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Influence Plus">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g fill="none" stroke="#f7d64e" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <path d="M16 48V28M28 48V18M40 48V34"/>
+    <path d="M47 18v18M38 27h18"/>
+  </g>
+</svg>
